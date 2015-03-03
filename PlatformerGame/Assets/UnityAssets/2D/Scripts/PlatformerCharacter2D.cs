@@ -2,7 +2,6 @@
 
 namespace UnitySampleAssets._2D
 {
-
     public class PlatformerCharacter2D : MonoBehaviour
     {
         private bool facingRight = true; // For determining which way the player is currently facing.
@@ -25,6 +24,7 @@ namespace UnitySampleAssets._2D
         private float ceilingRadius = .01f; // Radius of the overlap circle to determine if the player can stand up
         private Animator anim; // Reference to the player's animator component.
 		private float maxClimbSpeed = 2f;
+		public Vector3 spawnPoint = new Vector3(0,0,1);
 
         private void Awake()
         {
@@ -33,7 +33,6 @@ namespace UnitySampleAssets._2D
             ceilingCheck = transform.Find("CeilingCheck");
             anim = GetComponent<Animator>();
         }
-
 
         private void FixedUpdate()
         {
@@ -44,6 +43,10 @@ namespace UnitySampleAssets._2D
             // Set the vertical animation
             anim.SetFloat("vSpeed", rigidbody2D.velocity.y);
         }
+
+		public void Respawn(){
+			transform.position = spawnPoint;
+		}
 
 		public void Climb (){
 			if (Physics2D.OverlapCircle (groundCheck.position, groundedRadius*2, whatIsClimbable)) {
