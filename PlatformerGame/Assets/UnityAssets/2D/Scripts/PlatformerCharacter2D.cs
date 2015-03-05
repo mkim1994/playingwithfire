@@ -7,11 +7,13 @@ namespace UnitySampleAssets._2D
         private bool facingRight = true; // For determining which way the player is currently facing.
 
         [SerializeField] private float maxSpeed = 10f; // The fastest the player can travel in the x axis.
-        [SerializeField] private float jumpForce = 400f; // Amount of force added when the player jumps.	
+        [SerializeField] private float jumpForce = 300f; // Amount of force added when the player jumps.	
+		[SerializeField] private float mountJumpForce = 475f; // Amount of force added when the raindeer jumps.	
 
         [Range(0, 1)] [SerializeField] private float crouchSpeed = .36f;
                                                      // Amount of maxSpeed applied to crouching movement. 1 = 100%
 		[Range(0, 1)] [SerializeField] private float grabSpeed = .66f;
+		[Range(0, 1)] [SerializeField] private float mountSpeed = 3.0f;
 
         [SerializeField] private bool airControl = false; // Whether or not a player can steer while jumping;
         [SerializeField] private LayerMask whatIsGround; // A mask determining what is ground to the character
@@ -48,6 +50,15 @@ namespace UnitySampleAssets._2D
 			transform.position = spawnPoint;
 		}
 
+		public void Mount(Vector3 rPos){
+			transform.position = rPos;//center at raindeer pos
+			anim.SetBool ("Mount", true);
+		}
+
+		public void Dismount(){
+			anim.SetBool ("Mount", false);
+		}
+
 		public void Climb (){
 			if (Physics2D.OverlapCircle (groundCheck.position, groundedRadius*2, whatIsClimbable)) {
 				anim.SetBool ("Climb", true);
@@ -81,6 +92,8 @@ namespace UnitySampleAssets._2D
 
 				move = (anim.GetBool("Grab") ? move*grabSpeed : move); //slow down while grabbing obj
 
+				move = (anim.GetBool("Mount") ? move*mountSpeed : move); //speed up on raindeer
+
                 // The Speed animator parameter is set to the absolute value of the horizontal input.
                 anim.SetFloat("Speed", Mathf.Abs(move));
 
@@ -104,7 +117,10 @@ namespace UnitySampleAssets._2D
                 anim.SetBool("Ground", false);
 				if (rigidbody2D.velocity.y < maxClimbSpeed)//if not already climbing at max speed
 				{
-                rigidbody2D.AddForce(new Vector2(0f, jumpForce));
+                if (anim.GetBool("Mount")){
+						rigidbody2D.AddForce(new Vector2(0f, mountJumpForce));
+					}
+				else {rigidbody2D.AddForce(new Vector2(0f, jumpForce));}
 				}
             }
         }
