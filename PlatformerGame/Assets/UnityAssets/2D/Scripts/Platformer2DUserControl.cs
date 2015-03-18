@@ -19,22 +19,27 @@ namespace UnitySampleAssets._2D
 
             if (!jump)
             // Read the jump input in Update so button presses aren't missed.
-			jump = Input.GetKey (KeyCode.Space);
+			jump = Input.GetKey (KeyCode.UpArrow);
 
         }
 
         private void FixedUpdate()
         {
-
             // Read the inputs.
             bool crouch = Input.GetKey(KeyCode.DownArrow);
             float h = 0;
 			if (Input.GetKey(KeyCode.LeftArrow)){ h = -0.35f;}
 			if (Input.GetKey(KeyCode.RightArrow)){ h = 0.35f;}
-			if (Input.GetKey (KeyCode.UpArrow)) {character.Climb();}
+			if (Input.GetKey(KeyCode.UpArrow)) {character.Climb();}
             // Pass all parameters to the character control script.
             character.Move(h, crouch, jump);
             jump = false;
         }
-    }
+		private	void OnCollisionStay2D(Collision2D coll) {
+			if (coll.gameObject.tag == "Breakable"){
+				Debug.Log("asdf");
+				if (Input.GetKey(KeyCode.LeftControl)){character.Bash(coll.gameObject);}
+			}
+    	}
+	}
 }

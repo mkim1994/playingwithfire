@@ -17,6 +17,7 @@ namespace UnitySampleAssets._2D
 
         [SerializeField] private bool airControl = false; // Whether or not a player can steer while jumping;
         [SerializeField] private LayerMask whatIsGround; // A mask determining what is ground to the character
+		[SerializeField] private LayerMask whatIsBashable; // A mask determining what is ground to the character
 		[SerializeField] private LayerMask whatIsClimbable; // A mask determining what the character can climb
 
         private Transform groundCheck; // A position marking where to check if the player is grounded.
@@ -62,13 +63,25 @@ namespace UnitySampleAssets._2D
 		public void Climb (){
 			if (Physics2D.OverlapCircle (groundCheck.position, groundedRadius*2, whatIsClimbable)) {
 				anim.SetBool ("Climb", true);
-					if (rigidbody2D.velocity.y < maxClimbSpeed){
+					if (rigidbody2D.velocity.y < maxClimbSpeed && !anim.GetBool("Mount")){
 						rigidbody2D.AddForce(new Vector2(0f, 50f));
 					}
 				} 
 			else { 
 				anim.SetBool ("Climb", false);
 				}
+			}
+
+		public void Bash (GameObject rock){
+			if (anim.GetBool("Mount") && grounded){
+				anim.SetBool("Bash",true);
+				Invoke("BreakRock",1.0f); //change 1.0f to however long the animation takes
+				Destroy (rock);
+			}
+		}
+
+		public void BreakRock (GameObject rock){
+			anim.SetBool ("Bash", false); //no longer bashing
 			}
 
         public void Move(float move, bool crouch, bool jump)
@@ -80,6 +93,8 @@ namespace UnitySampleAssets._2D
                 if (Physics2D.OverlapCircle(ceilingCheck.position, ceilingRadius, whatIsGround))
                     crouch = true;
             }
+
+			if (anim.GetBool("Mount")) {crouch = false;} //cant croutch while mounted
 
             // Set whether or not the character is crouching in the animator
             anim.SetBool("Crouch", crouch);
@@ -110,17 +125,17 @@ namespace UnitySampleAssets._2D
                     Flip();
             }
             // If the player should jump...
-            if (grounded && jump && anim.GetBool("Ground"))
+            if (grounded && jump && anim.GetBool("Ground") && !crouch)
             {
                 // Add a vertical force to the player.
                 grounded = false;
                 anim.SetBool("Ground", false);
-				if (rigidbody2D.velocity.y < maxClimbSpeed)//if not already climbing at max speed
+				if (rigidbody2D.velocity.y < maxClimbSpeed) //if not already climbing at max speed
 				{
-                if (anim.GetBool("Mount")){
-						rigidbody2D.AddForce(new Vector2(0f, mountJumpForce));
-					}
-				else {rigidbody2D.AddForce(new Vector2(0f, jumpForce));}
+	                if (anim.GetBool("Mount")){
+							rigidbody2D.AddForce(new Vector2(0f, mountJumpForce));
+						}
+					else {rigidbody2D.AddForce(new Vector2(0f, jumpForce));}
 				}
             }
         }
