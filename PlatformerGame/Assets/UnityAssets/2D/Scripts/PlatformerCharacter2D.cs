@@ -8,7 +8,7 @@ namespace UnitySampleAssets._2D
 
         [SerializeField] private float maxSpeed = 10f; // The fastest the player can travel in the x axis.
         [SerializeField] private float jumpForce = 300f; // Amount of force added when the player jumps.	
-		[SerializeField] private float mountJumpForce = 475f; // Amount of force added when the raindeer jumps.	
+		[SerializeField] private float mountJumpForce = 6000f; // Amount of force added when the raindeer jumps.	
 
         [Range(0, 1)] [SerializeField] private float crouchSpeed = .36f;
                                                      // Amount of maxSpeed applied to crouching movement. 1 = 100%
