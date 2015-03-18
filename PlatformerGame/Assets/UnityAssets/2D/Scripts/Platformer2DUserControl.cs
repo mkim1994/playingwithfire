@@ -37,7 +37,6 @@ namespace UnitySampleAssets._2D
         }
 		private	void OnCollisionStay2D(Collision2D coll) {
 			if (coll.gameObject.tag == "Breakable"){
-				Debug.Log("asdf");
 				if (Input.GetKey(KeyCode.LeftControl)){character.Bash(coll.gameObject);}
 			}
     	}
