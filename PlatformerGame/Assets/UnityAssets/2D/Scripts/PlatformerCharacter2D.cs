@@ -72,16 +72,18 @@ namespace UnitySampleAssets._2D
 				}
 			}
 
+		private GameObject breakingRock;
 		public void Bash (GameObject rock){
 			if (anim.GetBool("Mount") && grounded){
 				anim.SetBool("Bash",true);
+				breakingRock = rock;
 				Invoke("BreakRock",1.0f); //change 1.0f to however long the animation takes
-				Destroy (rock);
 			}
 		}
 
-		public void BreakRock (GameObject rock){
+		public void BreakRock (){
 			anim.SetBool ("Bash", false); //no longer bashing
+			Destroy (breakingRock);
 			}
 
         public void Move(float move, bool crouch, bool jump)
