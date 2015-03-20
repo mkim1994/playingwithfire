@@ -8,12 +8,10 @@ namespace UnitySampleAssets._2D
     {
         private PlatformerCharacter2D character;
         private bool jump;
-		private Vector3 startPos;
 
         private void Awake()
         {
             character = GetComponent<PlatformerCharacter2D>();
-			startPos = character.transform.position;
         }
 
         private void Update()
@@ -36,7 +34,6 @@ namespace UnitySampleAssets._2D
             // Pass all parameters to the character control script.
             character.Move(h, crouch, jump);
             jump = false;
-			if (Input.GetKey(KeyCode.R)){character.transform.position = startPos;}
         }
 		private	void OnCollisionStay2D(Collision2D coll) {
 			if (coll.gameObject.tag == "Breakable"){
