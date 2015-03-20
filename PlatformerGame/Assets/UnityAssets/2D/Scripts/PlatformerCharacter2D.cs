@@ -59,6 +59,8 @@ namespace UnitySampleAssets._2D
             anim = GetComponent<Animator>();
 
             digging = false;
+
+			anim.SetBool ("Reindeer",false);
         }
 
         private void FixedUpdate()
@@ -80,10 +82,12 @@ namespace UnitySampleAssets._2D
 		public void Mount(Vector3 rPos){
 			transform.position = rPos;//center at raindeer pos
 			anim.SetBool ("Mount", true);
+			anim.SetBool ("Reindeer",true);
 		}
 
 		public void Dismount(){
 			anim.SetBool ("Mount", false);
+			anim.SetBool ("Reindeer",false);
 		}
 
 		public void Climb (){

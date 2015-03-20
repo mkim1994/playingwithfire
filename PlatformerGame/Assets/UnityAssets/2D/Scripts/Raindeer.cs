@@ -23,11 +23,13 @@ namespace UnitySampleAssets._2D
 						childscript.Mount(transform.position); //mount the raindeer
 						GetComponent<SpriteRenderer>().renderer.enabled = false; //hide the raindeer
 						mounted = true;
+
 					}
 				}
-				else if((mounted) && (child.rigidbody2D.velocity.y == 0)){
+				else if((mounted) && (child.rigidbody2D.velocity.y == 0)){ //dismount
 					GetComponent<SpriteRenderer>().renderer.enabled = true; //hide the raindeer
-					transform.position = child.position; //appear at mounted childs position
+					transform.position = child.position + new Vector3(0,0.7f,0); //appear at mounted childs position
+					//transform.position+= new Vector3(0,10,0);
 					childscript.Dismount();
 					mounted = false;
 				}
