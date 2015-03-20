@@ -7,8 +7,16 @@ namespace UnitySampleAssets._2D
 		public Transform child;
 		public PlatformerCharacter2D childscript;
 		private bool mounted = false;
+		private Vector3 startPos;
+
+		private void Awake()
+		{
+			startPos = transform.position;
+		}
 		
 		void Update () {
+			if (Input.GetKey(KeyCode.R)){transform.position = startPos;}
+
 			if (Input.GetKeyDown (KeyCode.LeftShift)) {
 				if(!mounted){ //mount
 					if (Vector3.Distance (child.position, transform.renderer.bounds.center) < 1f) {

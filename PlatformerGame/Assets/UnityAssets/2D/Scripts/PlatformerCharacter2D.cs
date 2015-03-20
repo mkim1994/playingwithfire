@@ -19,6 +19,7 @@ namespace UnitySampleAssets._2D
         [SerializeField] private LayerMask whatIsGround; // A mask determining what is ground to the character
 		[SerializeField] private LayerMask whatIsBashable; // A mask determining what is ground to the character
 		[SerializeField] private LayerMask whatIsClimbable; // A mask determining what the character can climb
+		[SerializeField] private LayerMask whatIsDigable; // A mask determining what the character can dig
 
         private Transform groundCheck; // A position marking where to check if the player is grounded.
         private float groundedRadius = .2f; // Radius of the overlap circle to determine if grounded
@@ -88,13 +89,19 @@ namespace UnitySampleAssets._2D
 
         public void Move(float move, bool crouch, bool jump)
         {
+			bool digging = false;
+
             // If crouching, check to see if the character can stand up
-            if (!crouch && anim.GetBool("Crouch"))
+            if (!crouch && (anim.GetBool("Crouch") || anim.GetBool("Dig")))
             {
                 // If the character has a ceiling preventing them from standing up, keep them crouching
                 if (Physics2D.OverlapCircle(ceilingCheck.position, ceilingRadius, whatIsGround))
                     crouch = true;
             }
+			
+			if (crouch && Physics2D.OverlapCircle(ceilingCheck.position, ceilingRadius, whatIsDigable)){
+				digging = true;
+			}
 
 			if (anim.GetBool("Mount")) {crouch = false;} //cant croutch while mounted
 
