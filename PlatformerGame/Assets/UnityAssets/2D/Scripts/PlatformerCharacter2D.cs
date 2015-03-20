@@ -31,6 +31,8 @@ namespace UnitySampleAssets._2D
 		private float maxClimbSpeed = 2f;
 		public Vector3 spawnPoint = new Vector3(0,0,1);
 
+		private bool rabbitAspect;
+
 		private bool digging;
 
 		void OnCollisionEnter2D(Collision2D collision)
@@ -39,6 +41,12 @@ namespace UnitySampleAssets._2D
 			if (collision.collider.tag == "Diggable")
 			{
 				Debug.Log("Collided with a diggable!\n");
+			}
+
+			if (collision.gameObject.tag == "DeadAnimal"){
+				if (Input.GetKey(KeyCode.LeftControl)){
+					rabbitAspect = true;
+				}
 			}
 		}
 
@@ -61,6 +69,14 @@ namespace UnitySampleAssets._2D
             digging = false;
 
 			anim.SetBool ("Reindeer",false);
+
+			//check if you have the ability to dig from the beginning of the level
+			if(Application.loadedLevelName == "01"){
+				rabbitAspect = false;
+			}
+			else{
+				rabbitAspect = true;
+			}
         }
 
         private void FixedUpdate()

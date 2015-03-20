@@ -9,6 +9,7 @@ namespace UnitySampleAssets._2D
         private PlatformerCharacter2D character;
         private bool jump;
 		private Vector3 startPos;
+		//private bool rabbitAspect;
 
         private void Awake()
         {
@@ -19,8 +20,8 @@ namespace UnitySampleAssets._2D
         private void Update()
         {
             if (!jump)
-            // Read the jump input in Update so button presses aren't missed.
-			jump = Input.GetKey (KeyCode.UpArrow);
+           	 // Read the jump input in Update so button presses aren't missed.
+				jump = Input.GetKey (KeyCode.UpArrow);
 
         }
 
@@ -43,6 +44,7 @@ namespace UnitySampleAssets._2D
 			if (coll.gameObject.tag == "Breakable"){
 				if (Input.GetKey(KeyCode.LeftControl)){character.Bash(coll.gameObject);}
 			}
+
     	}
 	}
 }
