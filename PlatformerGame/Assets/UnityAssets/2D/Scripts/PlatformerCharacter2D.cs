@@ -41,7 +41,9 @@ namespace UnitySampleAssets._2D
         private void FixedUpdate()
         {
             // The player is grounded if a circlecast to the groundcheck position hits anything designated as ground
-            grounded = Physics2D.OverlapCircle(groundCheck.position, groundedRadius, whatIsGround);
+			grounded = Physics2D.OverlapCircle(groundCheck.position, groundedRadius, whatIsGround) || 
+				Physics2D.OverlapCircle(groundCheck.position, groundedRadius, whatIsDigable);
+
             anim.SetBool("Ground", grounded);
 
             // Set the vertical animation
@@ -99,54 +101,62 @@ namespace UnitySampleAssets._2D
                     crouch = true;
             }
 			
-			if (crouch && Physics2D.OverlapCircle(ceilingCheck.position, ceilingRadius, whatIsDigable)){
+			if (crouch && !anim.GetBool("Mount") && Physics2D.OverlapCircle(groundCheck.position, groundedRadius, whatIsDigable)){
 				digging = true;
 			}
 
-			if (anim.GetBool("Mount")) {crouch = false;} //cant croutch while mounted
+			anim.SetBool ("Dig", digging); //show up in animation (need to add varible to it...)
 
-            // Set whether or not the character is crouching in the animator
-            anim.SetBool("Crouch", crouch);
+			if (digging) 
+			{
+				//ADD DIGGING MOVEMENT HERE !!!!!
+			}
+			else {
+				if (anim.GetBool("Mount")) {crouch = false;} //cant croutch while mounted
 
-            //only control the player if grounded or airControl is turned on
-            if (grounded || airControl)
-            {
-                // Reduce the speed if crouching by the crouchSpeed multiplier
-                move = (crouch ? move*crouchSpeed : move);
+	            // Set whether or not the character is crouching in the animator
+	            anim.SetBool("Crouch", crouch);
 
-				move = (anim.GetBool("Grab") ? move*grabSpeed : move); //slow down while grabbing obj
+	            //only control the player if grounded or airControl is turned on
+	            if (grounded || airControl)
+	            {
+	                // Reduce the speed if crouching by the crouchSpeed multiplier
+	                move = (crouch ? move*crouchSpeed : move);
 
-				move = (anim.GetBool("Mount") ? move*mountSpeed : move); //speed up on raindeer
+					move = (anim.GetBool("Grab") ? move*grabSpeed : move); //slow down while grabbing obj
 
-                // The Speed animator parameter is set to the absolute value of the horizontal input.
-                anim.SetFloat("Speed", Mathf.Abs(move));
+					move = (anim.GetBool("Mount") ? move*mountSpeed : move); //speed up on raindeer
 
-                // Move the character
-                rigidbody2D.velocity = new Vector2(move*maxSpeed, rigidbody2D.velocity.y);
+	                // The Speed animator parameter is set to the absolute value of the horizontal input.
+	                anim.SetFloat("Speed", Mathf.Abs(move));
 
-                // If the input is moving the player right and the player is facing left...
-                if (move > 0 && !facingRight)
-                    // ... flip the player.
-                    Flip();
-                    // Otherwise if the input is moving the player left and the player is facing right...
-                else if (move < 0 && facingRight)
-                    // ... flip the player.
-                    Flip();
-            }
-            // If the player should jump...
-            if (grounded && jump && anim.GetBool("Ground") && !crouch)
-            {
-                // Add a vertical force to the player.
-                grounded = false;
-                anim.SetBool("Ground", false);
-				if (rigidbody2D.velocity.y < maxClimbSpeed) //if not already climbing at max speed
-				{
-	                if (anim.GetBool("Mount")){
-							rigidbody2D.AddForce(new Vector2(0f, mountJumpForce));
-						}
-					else {rigidbody2D.AddForce(new Vector2(0f, jumpForce));}
-				}
-            }
+	                // Move the character
+	                rigidbody2D.velocity = new Vector2(move*maxSpeed, rigidbody2D.velocity.y);
+
+	                // If the input is moving the player right and the player is facing left...
+	                if (move > 0 && !facingRight)
+	                    // ... flip the player.
+	                    Flip();
+	                    // Otherwise if the input is moving the player left and the player is facing right...
+	                else if (move < 0 && facingRight)
+	                    // ... flip the player.
+	                    Flip();
+	            }
+	            // If the player should jump...
+	            if (grounded && jump && anim.GetBool("Ground") && !crouch)
+	            {
+	                // Add a vertical force to the player.
+	                grounded = false;
+	                anim.SetBool("Ground", false);
+					if (rigidbody2D.velocity.y < maxClimbSpeed) //if not already climbing at max speed
+					{
+		                if (anim.GetBool("Mount")){
+								rigidbody2D.AddForce(new Vector2(0f, mountJumpForce));
+							}
+						else {rigidbody2D.AddForce(new Vector2(0f, jumpForce));}
+					}
+	            }
+			}
         }
 
 
