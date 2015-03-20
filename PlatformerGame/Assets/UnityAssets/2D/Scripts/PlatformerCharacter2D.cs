@@ -13,6 +13,7 @@ namespace UnitySampleAssets._2D
         [Range(0, 1)] [SerializeField] private float crouchSpeed = .36f;
                                                      // Amount of maxSpeed applied to crouching movement. 1 = 100%
 		[Range(0, 1)] [SerializeField] private float grabSpeed = .66f;
+		[Range(0, 1)] [SerializeField] private float digSpeed = .66f;
 		[Range(0, 1)] [SerializeField] private float mountSpeed = 3.0f;
 
         [SerializeField] private bool airControl = false; // Whether or not a player can steer while jumping;
@@ -30,12 +31,34 @@ namespace UnitySampleAssets._2D
 		private float maxClimbSpeed = 2f;
 		public Vector3 spawnPoint = new Vector3(0,0,1);
 
+		private bool digging;
+
+		void OnCollisionEnter2D(Collision2D collision)
+		{
+			Debug.Log("Collision!\n");
+			if (collision.collider.tag == "Diggable")
+			{
+				Debug.Log("Collided with a diggable!\n");
+			}
+		}
+
+		void OnCollisionExit2D(Collision2D collision)
+		{
+			Debug.Log("Exit Collision!\n");
+			if (collision.collider.tag == "Diggable")
+			{
+				Debug.Log("Exiting collision with a diggable!\n");
+			}
+		}
+
         private void Awake()
         {
             // Setting up references.
             groundCheck = transform.Find("GroundCheck");
             ceilingCheck = transform.Find("CeilingCheck");
             anim = GetComponent<Animator>();
+
+            digging = false;
         }
 
         private void FixedUpdate()
@@ -89,10 +112,8 @@ namespace UnitySampleAssets._2D
 			Destroy (breakingRock);
 			}
 
-        public void Move(float move, bool crouch, bool jump)
+        public void Move(float move_h, float move_v, bool crouch, bool jump)
         {
-			bool digging = false;
-
             // If crouching, check to see if the character can stand up
             if (!crouch && (anim.GetBool("Crouch") || anim.GetBool("Dig")))
             {
@@ -101,17 +122,36 @@ namespace UnitySampleAssets._2D
                     crouch = true;
             }
 			
-			if (crouch && !anim.GetBool("Mount") && Physics2D.OverlapCircle(groundCheck.position, groundedRadius, whatIsDigable)){
+			if ((crouch || digging) && !anim.GetBool("Mount") && Physics2D.OverlapCircle(groundCheck.position, groundedRadius, whatIsDigable)){
+				if (!digging) Debug.Log("Start Digging\n");
 				digging = true;
+				// don't collide with diggable objects
+				// STYLE NOTE: THERE SHOULD BE SOME WAY TO GET THE LAYER NUMBERS WITHOUT HARD CODING THEM
+				// IF THE LAYER NUMBERS CHANGE, NEED TO CHANGE THESE TOO
+				Physics2D.IgnoreLayerCollision(8, 11, true);		
+			}
+			else
+			{
+				if (digging) Debug.Log("Stop Digging\n");
+				digging = false;
+				Physics2D.IgnoreLayerCollision(8, 11, false);
 			}
 
-			anim.SetBool ("Dig", digging); //show up in animation (need to add varible to it...)
+			//anim.SetBool ("Dig", digging); //show up in animation (need to add varible to it...)
 
 			if (digging) 
 			{
-				//ADD DIGGING MOVEMENT HERE !!!!!
+				// adjust speed while digging
+				move_h *= digSpeed;
+				move_v *= digSpeed;
+
+				// animate at maximum speed (probably the same)
+				anim.SetFloat("Speed", Mathf.Max(Mathf.Abs(move_h), Mathf.Abs(move_v)));
+
+				rigidbody2D.velocity = new Vector2(move_h * maxSpeed, move_v * maxSpeed);
 			}
-			else {
+			else {	
+
 				if (anim.GetBool("Mount")) {crouch = false;} //cant croutch while mounted
 
 	            // Set whether or not the character is crouching in the animator
@@ -121,26 +161,17 @@ namespace UnitySampleAssets._2D
 	            if (grounded || airControl)
 	            {
 	                // Reduce the speed if crouching by the crouchSpeed multiplier
-	                move = (crouch ? move*crouchSpeed : move);
+	                move_h = (crouch ? move_h*crouchSpeed : move_h);
 
-					move = (anim.GetBool("Grab") ? move*grabSpeed : move); //slow down while grabbing obj
+					move_h = (anim.GetBool("Grab") ? move_h*grabSpeed : move_h); //slow down while grabbing obj
 
-					move = (anim.GetBool("Mount") ? move*mountSpeed : move); //speed up on raindeer
+					move_h = (anim.GetBool("Mount") ? move_h*mountSpeed : move_h); //speed up on raindeer
 
 	                // The Speed animator parameter is set to the absolute value of the horizontal input.
-	                anim.SetFloat("Speed", Mathf.Abs(move));
+	                anim.SetFloat("Speed", Mathf.Abs(move_h));
 
-	                // Move the character
-	                rigidbody2D.velocity = new Vector2(move*maxSpeed, rigidbody2D.velocity.y);
-
-	                // If the input is moving the player right and the player is facing left...
-	                if (move > 0 && !facingRight)
-	                    // ... flip the player.
-	                    Flip();
-	                    // Otherwise if the input is moving the player left and the player is facing right...
-	                else if (move < 0 && facingRight)
-	                    // ... flip the player.
-	                    Flip();
+	                // Move_h the character
+	                rigidbody2D.velocity = new Vector2(move_h*maxSpeed, rigidbody2D.velocity.y);
 	            }
 	            // If the player should jump...
 	            if (grounded && jump && anim.GetBool("Ground") && !crouch)
@@ -157,6 +188,14 @@ namespace UnitySampleAssets._2D
 					}
 	            }
 			}
+			// If the input is moving the player right and the player is facing left...
+	        if (move_h > 0 && !facingRight)
+	            // ... flip the player.
+	        	Flip();
+	        // Otherwise if the input is moving the player left and the player is facing right...
+	        else if (move_h < 0 && facingRight)
+	            // ... flip the player.
+	            Flip();
         }
 
 

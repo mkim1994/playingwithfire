@@ -29,11 +29,13 @@ namespace UnitySampleAssets._2D
             // Read the inputs.
             bool crouch = Input.GetKey(KeyCode.DownArrow);
             float h = 0;
+            float v = 0;
 			if (Input.GetKey(KeyCode.LeftArrow)){ h = -0.35f;}
 			if (Input.GetKey(KeyCode.RightArrow)){ h = 0.35f;}
-			if (Input.GetKey(KeyCode.UpArrow)) {character.Climb();}
+			if (Input.GetKey(KeyCode.UpArrow)) { v = 0.35f; character.Climb();}
+            if (Input.GetKey(KeyCode.DownArrow)){ v = -0.35f;}
             // Pass all parameters to the character control script.
-            character.Move(h, crouch, jump);
+            character.Move(h, v, crouch, jump);
             jump = false;
 			if (Input.GetKey(KeyCode.R)){character.transform.position = startPos;}
         }
