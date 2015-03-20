@@ -13,7 +13,8 @@ public class TriggerStone : MonoBehaviour {
 			if (Vector3.Distance (child.position, transform.renderer.bounds.center) < 1f) {
 				renderer.sprite = ActiveStone;
 				collider2D.enabled = false; //dissable from being set again
-				script.Invoke(function,0f);
+				if(script != null)
+					script.Invoke(function,0f);
 			}
 		}
 	}
