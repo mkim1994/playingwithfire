@@ -29,12 +29,12 @@ namespace UnitySampleAssets._2D
         {
             // Read the inputs.
             bool dig = Input.GetKey(KeyCode.DownArrow);
-            float h = 0;
-            float v = 0;
+            float h = 0.0f;
+            float v = 0.0f;
 			if (Input.GetKey(KeyCode.LeftArrow)){ h = -0.35f;}
-			if (Input.GetKey(KeyCode.RightArrow)){ h = 0.35f;}
+			else if (Input.GetKey(KeyCode.RightArrow)){ h = 0.35f;}
 			if (Input.GetKey(KeyCode.UpArrow)) { v = 0.35f; character.Climb();}
-            if (Input.GetKey(KeyCode.DownArrow)){ v = -0.35f;}
+            else if (Input.GetKey(KeyCode.DownArrow)){ v = -0.35f;}
             // Pass all parameters to the character control script.
             character.Move(h, v, dig, jump);
             jump = false;

@@ -141,6 +141,7 @@ namespace UnitySampleAssets._2D
 			{
 				Debug.Log("Start Digging\n");
 				Physics2D.IgnoreLayerCollision(8, 11, true);
+				rigidbody2D.gravityScale = 0.0f;
 				anim.SetBool("Dig", true);
 				// sanity check
 				anim.SetBool("Fly", false);
@@ -152,6 +153,7 @@ namespace UnitySampleAssets._2D
 				{
 					Debug.Log("Stop Digging\n");
 					Physics2D.IgnoreLayerCollision(8, 11, false);
+					rigidbody2D.gravityScale = 1.0f;
 					anim.SetBool("Dig", false);
 				}				
 			}
