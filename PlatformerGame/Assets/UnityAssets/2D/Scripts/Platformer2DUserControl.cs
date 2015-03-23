@@ -19,16 +19,16 @@ namespace UnitySampleAssets._2D
 
         private void Update()
         {
+            // Read the jump input in Update so button presses aren't missed.
             if (!jump)
-           	 // Read the jump input in Update so button presses aren't missed.
-				jump = Input.GetKey (KeyCode.UpArrow);
+           	    jump = Input.GetKey(KeyCode.UpArrow);
 
         }
 
         private void FixedUpdate()
         {
             // Read the inputs.
-            bool crouch = Input.GetKey(KeyCode.DownArrow);
+            bool dig = Input.GetKey(KeyCode.DownArrow);
             float h = 0;
             float v = 0;
 			if (Input.GetKey(KeyCode.LeftArrow)){ h = -0.35f;}
@@ -36,7 +36,7 @@ namespace UnitySampleAssets._2D
 			if (Input.GetKey(KeyCode.UpArrow)) { v = 0.35f; character.Climb();}
             if (Input.GetKey(KeyCode.DownArrow)){ v = -0.35f;}
             // Pass all parameters to the character control script.
-            character.Move(h, v, crouch, jump);
+            character.Move(h, v, dig, jump);
             jump = false;
 			if (Input.GetKey(KeyCode.R)){character.transform.position = startPos;}
         }

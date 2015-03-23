@@ -24,7 +24,7 @@ namespace UnitySampleAssets._2D
 		[SerializeField] private LayerMask whatIsDigable; // A mask determining what the character can dig
 
         private Transform groundCheck; // A position marking where to check if the player is grounded.
-        private float groundedRadius = .3f; // Radius of the overlap circle to determine if grounded
+        private float groundedRadius = .4f; // Radius of the overlap circle to determine if grounded
         private bool grounded = false; // Whether or not the player is grounded.
         private Transform ceilingCheck; // A position marking where to check for ceilings
         private float ceilingRadius = .01f; // Radius of the overlap circle to determine if the player can stand up
@@ -35,7 +35,6 @@ namespace UnitySampleAssets._2D
 
 		private bool rabbitAspect;
 
-		private bool digging;
 
 		void OnCollisionEnter2D(Collision2D collision)
 		{
@@ -66,9 +65,10 @@ namespace UnitySampleAssets._2D
             ceilingCheck = transform.Find("CeilingCheck");
             anim = GetComponent<Animator>();
 
-            digging = false;
-
-			anim.SetBool ("Reindeer",false);
+			anim.SetBool("Reindeer",false);
+			anim.SetBool("Grab", false);
+			anim.SetBool("Fly", false);
+			anim.SetBool("Mount", false);
 
 			//check if you have the ability to dig from the beginning of the level
 			if(Application.loadedLevelName == "01"){
@@ -82,11 +82,11 @@ namespace UnitySampleAssets._2D
         private void FixedUpdate()
         {
             // The player is grounded if a circlecast to the groundcheck position hits anything designated as ground
-			grounded = Physics2D.OverlapCircle(groundCheck.position, groundedRadius, whatIsGround) || 
-				Physics2D.OverlapCircle(groundCheck.position, groundedRadius, whatIsDigable);
+			grounded = Physics2D.OverlapCircle(groundCheck.position, groundedRadius, whatIsGround)
+					|| Physics2D.OverlapCircle(groundCheck.position, groundedRadius, whatIsDigable);
             anim.SetBool("Ground", grounded);
 
-            // Set the vertical animation
+            // Set the vertical animation - TODO: FELIPE QUESTIONS THE EXISTENCE OF THIS LINE OF CODE
             anim.SetFloat("vSpeed", rigidbody2D.velocity.y);
         }
 
@@ -96,30 +96,33 @@ namespace UnitySampleAssets._2D
 
 		public void Mount(Vector3 rPos){
 			transform.position = rPos;//center at raindeer pos
-			anim.SetBool ("Mount", true);
-			anim.SetBool ("Reindeer",true);
+			anim.SetBool("Mount", true);
+			anim.SetBool("Reindeer",true);
 		}
 
 		public void Dismount(){
-			anim.SetBool ("Mount", false);
-			anim.SetBool ("Reindeer",false);
+			anim.SetBool("Mount", false);
+			anim.SetBool("Reindeer",false);
 		}
 
 		public void Climb (){
-			if (Physics2D.OverlapCircle (groundCheck.position, groundedRadius*1.5f, whatIsClimbable)) {
-				anim.SetBool ("Climb", true);
-					if (rigidbody2D.velocity.y < maxClimbSpeed && !anim.GetBool("Mount")){
-						rigidbody2D.AddForce(new Vector2(0f, 50f));
-					}
-				} 
-			else { 
-				anim.SetBool ("Climb", false);
+			if (Physics2D.OverlapCircle(groundCheck.position, groundedRadius*1.5f, whatIsClimbable)) 
+			{
+				anim.SetBool("Climb", true);
+				if (rigidbody2D.velocity.y < maxClimbSpeed && !anim.GetBool("Mount")){
+					rigidbody2D.AddForce(new Vector2(0f, 50f));
 				}
+			} 
+			else 
+			{ 
+				anim.SetBool ("Climb", false);
 			}
+		}
 
 		private GameObject breakingRock;
 		public void Bash (GameObject rock){
-			if (anim.GetBool("Mount") && grounded){
+			if (anim.GetBool("Mount") && grounded)
+			{
 				anim.SetBool("Bash",true);
 				breakingRock = rock;
 				Invoke("BreakRock",1.0f); //change 1.0f to however long the animation takes
@@ -131,103 +134,78 @@ namespace UnitySampleAssets._2D
 			Destroy (breakingRock);
 			}
 
-        public void Move(float move_h, float move_v, bool crouch, bool jump)
-        {
-            // If crouching, check to see if the character can stand up
-            if (!crouch && (anim.GetBool("Crouch") || anim.GetBool("Dig")))
-            {
-                // If the character has a ceiling preventing them from standing up, keep them crouching
-                if (Physics2D.OverlapCircle(ceilingCheck.position, ceilingRadius, whatIsGround))
-                    crouch = true;
-            }
-			
-			if ((crouch || digging) && !anim.GetBool("Mount") && Physics2D.OverlapCircle(groundCheck.position, groundedRadius, whatIsDigable)){
-				if (!digging) Debug.Log("Start Digging\n");
-				digging = true;
-				// don't collide with diggable objects
-				// STYLE NOTE: THERE SHOULD BE SOME WAY TO GET THE LAYER NUMBERS WITHOUT HARD CODING THEM
-				// IF THE LAYER NUMBERS CHANGE, NEED TO CHANGE THESE TOO
-				Physics2D.IgnoreLayerCollision(8, 11, true);		
-			}
-			else
+        public void Move(float move_h, float move_v, bool dig, bool jump)
+        {			
+        	// toggle digging when the controller says 'dig' only if not already digging, not mounted, and touching a tunnel
+        	if (dig && !anim.GetBool("Dig") && !anim.GetBool("Mount") && Physics2D.OverlapCircle(groundCheck.position, groundedRadius, whatIsDigable))
 			{
-				if (digging) Debug.Log("Stop Digging\n");
-				digging = false;
-				Physics2D.IgnoreLayerCollision(8, 11, false);
+				Debug.Log("Start Digging\n");
+				Physics2D.IgnoreLayerCollision(8, 11, true);
+				anim.SetBool("Dig", true);
+				// sanity check
+				anim.SetBool("Fly", false);
+			}
+			else if (anim.GetBool("Dig"))
+			{
+				// while digging, check every tick to see if we exit the tunnel
+				if ( !Physics2D.OverlapCircle(groundCheck.position, groundedRadius, whatIsDigable) )
+				{
+					Debug.Log("Stop Digging\n");
+					Physics2D.IgnoreLayerCollision(8, 11, false);
+					anim.SetBool("Dig", false);
+				}				
 			}
 
-			//anim.SetBool ("Dig", digging); //show up in animation (need to add varible to it...)
 
-			if (digging) 
+			// handle movement while digging
+			if (anim.GetBool("Dig")) 
 			{
-				// adjust speed while digging
 				move_h *= digSpeed;
 				move_v *= digSpeed;
-
-				// animate at maximum speed (probably the same)
-				anim.SetFloat("Speed", Mathf.Max(Mathf.Abs(move_h), Mathf.Abs(move_v)));
-
+				anim.SetFloat("Speed", Mathf.Abs(move_h));
+				anim.SetFloat("vSpeed", Mathf.Abs(move_v));
 				rigidbody2D.velocity = new Vector2(move_h * maxSpeed, move_v * maxSpeed);
 			}
-			else {	
-
-				if (anim.GetBool("Mount")) {crouch = false;} //cant croutch while mounted
-
-	            // Set whether or not the character is crouching in the animator
-	            anim.SetBool("Crouch", false);
-
-	            //only control the player if grounded or airControl is turned on
-	            if (grounded || airControl)
+			// handle above-ground movement
+			else 
+			{	
+	            // horizontal control when the player is grounded or flying
+	            if (grounded || anim.GetBool("Fly"))
 	            {
-	                // Reduce the speed if crouching by the crouchSpeed multiplier
-	                //move_h = (crouch ? move_h*crouchSpeed : move_h);
-
-					move_h = (anim.GetBool("Grab") ? move_h*grabSpeed : move_h); //slow down while grabbing obj
-
-					move_h = (anim.GetBool("Mount") ? move_h*mountSpeed : move_h); //speed up on raindeer
-
-	                // The Speed animator parameter is set to the absolute value of the horizontal input.
+	            	move_h *= anim.GetBool("Grab") ? grabSpeed : (anim.GetBool("Mount") ? mountSpeed : 1.0f );
 	                anim.SetFloat("Speed", Mathf.Abs(move_h));
-
-	                // Move_h the character
+	                anim.SetFloat("vSpeed", Mathf.Abs(rigidbody2D.velocity.y));
 	                rigidbody2D.velocity = new Vector2(move_h*maxSpeed, rigidbody2D.velocity.y);
 				}					
 
-	            // If the player should jump...
-				if (anim.GetBool("Ground") && jump && !crouch && !anim.GetBool("Grab"))
-	            {
-					Debug.Log("hi");
-
-					grounded = false;
-
-	                // Add a vertical force to the player.
-	                anim.SetBool("Ground", false);
-					if (rigidbody2D.velocity.y < maxClimbSpeed) //if not already climbing at max speed
+	            // vertical control - jumping and flying
+				if (jump && !dig)
+				{
+					// the player can jump while riding the reinder
+					if (anim.GetBool("Mount"))
 					{
-		                if (anim.GetBool("Mount")){
+						// add force until we leave the ground (note: grab and mount should be exclusive, check for sanity)
+						if (anim.GetBool("Ground") && !anim.GetBool("Grab"))
 							rigidbody2D.AddForce(new Vector2(0f, mountJumpForce));
-						}
-						else if (canFly == true) {rigidbody2D.AddForce(new Vector2(0f, jumpForce));} 
 					}
-
-	            }
-				else if (canFly && jump && !crouch && !anim.GetBool("Grab")){
-					anim.SetBool("Fly", true);
-					if (!anim.GetBool("Mount") && rigidbody2D.velocity.y < -maxClimbSpeed && rigidbody2D.position.y < maxHeight){ 
-						rigidbody2D.AddForce(new Vector2(0f, jumpForce*1.25f));
+					// in some levels, the child can fly	
+					else if ( canFly && !anim.GetBool("Grab"))
+					{
+						anim.SetBool("Fly", true);
+						if ( rigidbody2D.velocity.y < maxClimbSpeed && rigidbody2D.position.y < maxHeight )
+							rigidbody2D.AddForce(new Vector2(0f, jumpForce*1.25f));
 					}
 				}
-				else {anim.SetBool("Fly",false);}
+				else
+				{
+					anim.SetBool("Fly", false);
+				}
 
 			}
-			// If the input is moving the player right and the player is facing left...
-	        if (move_h > 0 && !facingRight)
-	            // ... flip the player.
+
+			// flip the character to face the direction of motion
+	        if ( (move_h > 0 && !facingRight) || (move_h < 0 && facingRight) )
 	        	Flip();
-	        // Otherwise if the input is moving the player left and the player is facing right...
-	        else if (move_h < 0 && facingRight)
-	            // ... flip the player.
-	            Flip();
         }
 
 
