@@ -174,13 +174,13 @@ namespace UnitySampleAssets._2D
 				if (anim.GetBool("Mount")) {crouch = false;} //cant croutch while mounted
 
 	            // Set whether or not the character is crouching in the animator
-	            anim.SetBool("Crouch", crouch);
+	            anim.SetBool("Crouch", false);
 
 	            //only control the player if grounded or airControl is turned on
 	            if (grounded || airControl)
 	            {
 	                // Reduce the speed if crouching by the crouchSpeed multiplier
-	                move_h = (crouch ? move_h*crouchSpeed : move_h);
+	                //move_h = (crouch ? move_h*crouchSpeed : move_h);
 
 					move_h = (anim.GetBool("Grab") ? move_h*grabSpeed : move_h); //slow down while grabbing obj
 
