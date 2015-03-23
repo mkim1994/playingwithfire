@@ -7,6 +7,7 @@ namespace UnitySampleAssets._2D
         private bool facingRight = true; // For determining which way the player is currently facing.
 
         [SerializeField] private float maxSpeed = 10f; // The fastest the player can travel in the x axis.
+		[SerializeField] private float maxHeight = 12f; // The fastest the player can travel in the x axis.
         [SerializeField] private float jumpForce = 300f; // Amount of force added when the player jumps.	
 		[SerializeField] private float mountJumpForce = 6000f; // Amount of force added when the raindeer jumps.	
 
@@ -23,13 +24,14 @@ namespace UnitySampleAssets._2D
 		[SerializeField] private LayerMask whatIsDigable; // A mask determining what the character can dig
 
         private Transform groundCheck; // A position marking where to check if the player is grounded.
-        private float groundedRadius = .2f; // Radius of the overlap circle to determine if grounded
+        private float groundedRadius = .3f; // Radius of the overlap circle to determine if grounded
         private bool grounded = false; // Whether or not the player is grounded.
         private Transform ceilingCheck; // A position marking where to check for ceilings
         private float ceilingRadius = .01f; // Radius of the overlap circle to determine if the player can stand up
         private Animator anim; // Reference to the player's animator component.
 		private float maxClimbSpeed = 2f;
 		public Vector3 spawnPoint = new Vector3(0,0,1);
+		public bool canFly = false; 
 
 		private bool rabbitAspect;
 
@@ -37,7 +39,6 @@ namespace UnitySampleAssets._2D
 
 		void OnCollisionEnter2D(Collision2D collision)
 		{
-			Debug.Log("Collision!\n");
 			if (collision.collider.tag == "Diggable")
 			{
 				Debug.Log("Collided with a diggable!\n");
@@ -52,7 +53,6 @@ namespace UnitySampleAssets._2D
 
 		void OnCollisionExit2D(Collision2D collision)
 		{
-			Debug.Log("Exit Collision!\n");
 			if (collision.collider.tag == "Diggable")
 			{
 				Debug.Log("Exiting collision with a diggable!\n");
@@ -84,7 +84,6 @@ namespace UnitySampleAssets._2D
             // The player is grounded if a circlecast to the groundcheck position hits anything designated as ground
 			grounded = Physics2D.OverlapCircle(groundCheck.position, groundedRadius, whatIsGround) || 
 				Physics2D.OverlapCircle(groundCheck.position, groundedRadius, whatIsDigable);
-
             anim.SetBool("Ground", grounded);
 
             // Set the vertical animation
@@ -107,7 +106,7 @@ namespace UnitySampleAssets._2D
 		}
 
 		public void Climb (){
-			if (Physics2D.OverlapCircle (groundCheck.position, groundedRadius*2, whatIsClimbable)) {
+			if (Physics2D.OverlapCircle (groundCheck.position, groundedRadius*1.5f, whatIsClimbable)) {
 				anim.SetBool ("Climb", true);
 					if (rigidbody2D.velocity.y < maxClimbSpeed && !anim.GetBool("Mount")){
 						rigidbody2D.AddForce(new Vector2(0f, 50f));
@@ -192,21 +191,34 @@ namespace UnitySampleAssets._2D
 
 	                // Move_h the character
 	                rigidbody2D.velocity = new Vector2(move_h*maxSpeed, rigidbody2D.velocity.y);
-	            }
+				}					
+
 	            // If the player should jump...
-	            if (grounded && jump && anim.GetBool("Ground") && !crouch)
+				if (anim.GetBool("Ground") && jump && !crouch && !anim.GetBool("Grab"))
 	            {
+					Debug.Log("hi");
+
+					grounded = false;
+
 	                // Add a vertical force to the player.
-	                grounded = false;
 	                anim.SetBool("Ground", false);
 					if (rigidbody2D.velocity.y < maxClimbSpeed) //if not already climbing at max speed
 					{
 		                if (anim.GetBool("Mount")){
-								rigidbody2D.AddForce(new Vector2(0f, mountJumpForce));
-							}
-						else {rigidbody2D.AddForce(new Vector2(0f, jumpForce));}
+							rigidbody2D.AddForce(new Vector2(0f, mountJumpForce));
+						}
+						else if (canFly == true) {rigidbody2D.AddForce(new Vector2(0f, jumpForce));} 
 					}
+
 	            }
+				else if (canFly && jump && !crouch && !anim.GetBool("Grab")){
+					anim.SetBool("Fly", true);
+					if (!anim.GetBool("Mount") && rigidbody2D.velocity.y < -maxClimbSpeed && rigidbody2D.position.y < maxHeight){ 
+						rigidbody2D.AddForce(new Vector2(0f, jumpForce*1.25f));
+					}
+				}
+				else {anim.SetBool("Fly",false);}
+
 			}
 			// If the input is moving the player right and the player is facing left...
 	        if (move_h > 0 && !facingRight)
