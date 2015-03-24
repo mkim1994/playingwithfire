@@ -16,7 +16,13 @@ namespace UnitySampleAssets._2D
 				}
         }
 		private void Respawn(){
-			character.Respawn ();
+			character.Respawn();
+		}
+
+		public void DieInAFire()
+		{
+			Debug.Log("YOU DIED IN A FIRE");
+			character.Respawn();
 		}
     }
 }
