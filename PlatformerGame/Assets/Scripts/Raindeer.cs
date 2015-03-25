@@ -9,11 +9,16 @@ namespace UnitySampleAssets._2D
 		private bool mounted = false;
 		private Vector3 startPos;
 		private Vector2 zeroVector;
+		private Vector3 rightScale;
+		private Vector3 leftScale;
 
 		private void Awake()
 		{
 			startPos = transform.position;
 			zeroVector = new Vector2 (0f, 0f);
+			rightScale = transform.localScale;
+			leftScale = rightScale;
+			leftScale.x *= -1;
 		}
 		
 		void Update () {
@@ -34,6 +39,10 @@ namespace UnitySampleAssets._2D
 					//transform.position+= new Vector3(0,10,0);
 					childscript.Dismount();
 					mounted = false;
+					if (childscript.facingRight == false){
+						transform.localScale = leftScale;
+					}
+					else { transform.localScale = rightScale;} //faceleft
 				}
 			}
 		}

@@ -4,7 +4,7 @@ namespace UnitySampleAssets._2D
 {
     public class PlatformerCharacter2D : MonoBehaviour
     {
-        private bool facingRight = true; // For determining which way the player is currently facing.
+        public bool facingRight = true; // For determining which way the player is currently facing.
 
         [SerializeField] private float maxSpeed = 10f; // The fastest the player can travel in the x axis.
 		[SerializeField] private float maxHeight = 12f; // The fastest the player can travel in the x axis.
@@ -150,6 +150,7 @@ namespace UnitySampleAssets._2D
 				anim.SetBool("Dig", true);
 				// sanity check
 				anim.SetBool("Fly", false);
+				transform.position = new Vector3(transform.position.x,transform.position.y-0.01f,0f);
 			}
 			else if (anim.GetBool("Dig"))
 			{
@@ -166,6 +167,7 @@ namespace UnitySampleAssets._2D
 			// handle movement while digging
 			if (anim.GetBool("Dig")) 
 			{
+				Debug.Log(Physics2D.OverlapCircle(groundCheck.position, groundedRadius, whatIsDigable) );
 				move_h *= digSpeed;
 				move_v *= digSpeed;
 				anim.SetFloat("Speed", Mathf.Abs(move_h));
