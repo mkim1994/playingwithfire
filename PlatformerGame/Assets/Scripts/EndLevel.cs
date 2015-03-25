@@ -9,7 +9,7 @@ public class EndLevel : MonoBehaviour {
 		if (other.tag == "Player") 
 		{
 			fade.EndScene();
-			//gameObject.collider2D.enabled = false;
+			gameObject.collider2D.enabled = false;
 		}
 	}
 }

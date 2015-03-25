@@ -4,8 +4,7 @@ using System.Collections;
 public class Fader : MonoBehaviour
 {
 	public float fadeSpeed = 1.5f;          // Speed that the screen fades to and from black.
-	
-	
+
 	private bool sceneStarting = true;      // Whether or not the scene is still fading in.
 	
 	
@@ -35,7 +34,10 @@ public class Fader : MonoBehaviour
 	void FadeToBlack ()
 	{
 		// Lerp the colour of the texture between itself and black.
-		guiTexture.color = Color.Lerp(guiTexture.color, Color.black, fadeSpeed*Time.deltaTime);
+		while (guiTexture.color.a <= 0.95f) {
+			guiTexture.color = Color.Lerp(guiTexture.color, Color.black, fadeSpeed*Time.deltaTime);
+
+		}
 	}
 	
 	
@@ -56,20 +58,20 @@ public class Fader : MonoBehaviour
 		}
 	}
 	
-	
 	public void EndScene ()
 	{
 		// Make sure the texture is enabled.
 		guiTexture.enabled = true;
-		
+
+
 		// Start fading towards black.
 		FadeToBlack();
+		// ... reload next level.
 
-			// ... reload next level.
+		Debug.Log("nextlevel");
 		string nextLevelName;
 		nextLevelName = "0"+(int.Parse(Application.loadedLevelName)+1).ToString();
-		
-		if(guiTexture.color.a >= 0.95f)
-			Application.LoadLevel(nextLevelName);
+		Application.LoadLevel(nextLevelName);
+
 	}
 }
