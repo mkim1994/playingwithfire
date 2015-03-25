@@ -10,6 +10,8 @@ namespace UnitySampleAssets._2D
 		[SerializeField] private float maxHeight = 12f; // The fastest the player can travel in the x axis.
         [SerializeField] private float jumpForce = 300f; // Amount of force added when the player jumps.	
 		[SerializeField] private float mountJumpForce = 6000f; // Amount of force added when the raindeer jumps.	
+		[SerializeField] private int maxFlaps = 30; // The fastest the player can travel in the x axis.
+
 
         [Range(0, 1)] [SerializeField] private float crouchSpeed = .36f;
                                                      // Amount of maxSpeed applied to crouching movement. 1 = 100%
@@ -34,6 +36,7 @@ namespace UnitySampleAssets._2D
 		public bool canFly = false; 
 
 		private bool rabbitAspect;
+		private int flaps;
 
 
 		void OnCollisionEnter2D(Collision2D collision)
@@ -64,6 +67,7 @@ namespace UnitySampleAssets._2D
             groundCheck = transform.Find("GroundCheck");
             ceilingCheck = transform.Find("CeilingCheck");
             anim = GetComponent<Animator>();
+			flaps = maxFlaps*10;
 
 			anim.SetBool("Reindeer",false);
 			anim.SetBool("Grab", false);
@@ -85,6 +89,7 @@ namespace UnitySampleAssets._2D
 			grounded = Physics2D.OverlapCircle(groundCheck.position, groundedRadius, whatIsGround)
 					|| Physics2D.OverlapCircle(groundCheck.position, groundedRadius, whatIsDigable);
             anim.SetBool("Ground", grounded);
+			if (grounded){flaps = maxFlaps*10;}
 
             // Set the vertical animation - TODO: FELIPE QUESTIONS THE EXISTENCE OF THIS LINE OF CODE
             anim.SetFloat("vSpeed", rigidbody2D.velocity.y);
@@ -194,8 +199,9 @@ namespace UnitySampleAssets._2D
 					else if ( canFly && !anim.GetBool("Grab"))
 					{
 						anim.SetBool("Fly", true);
-						if ( rigidbody2D.velocity.y < maxClimbSpeed && rigidbody2D.position.y < maxHeight )
+						if (flaps > 0 && rigidbody2D.velocity.y < maxClimbSpeed && rigidbody2D.position.y < maxHeight )
 							rigidbody2D.AddForce(new Vector2(0f, jumpForce*1.25f));
+							flaps -= 1;
 					}
 				}
 				else
