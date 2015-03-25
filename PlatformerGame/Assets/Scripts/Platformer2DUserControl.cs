@@ -29,8 +29,8 @@ namespace UnitySampleAssets._2D
         {
             // Read the inputs.
             bool dig = Input.GetKey(KeyCode.DownArrow);
-            float h = 0.0f;
-            float v = 0.0f;
+            float h = 0;
+            float v = 0;
 			if (Input.GetKey(KeyCode.LeftArrow)){ h = -0.35f;}
 			else if (Input.GetKey(KeyCode.RightArrow)){ h = 0.35f;}
 			if (Input.GetKey(KeyCode.UpArrow)) { v = 0.35f; character.Climb();}

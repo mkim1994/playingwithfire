@@ -19,7 +19,7 @@ namespace UnitySampleAssets._2D
 		[Range(0, 1)] [SerializeField] private float digSpeed = .66f;
 		[Range(0, 1)] [SerializeField] private float mountSpeed = 3.0f;
 
-        [SerializeField] private bool airControl = false; // Whether or not a player can steer while jumping;
+        [SerializeField] private bool airControl = true; // Whether or not a player can steer while jumping;
         [SerializeField] private LayerMask whatIsGround; // A mask determining what is ground to the character
 		[SerializeField] private LayerMask whatIsBashable; // A mask determining what is ground to the character
 		[SerializeField] private LayerMask whatIsClimbable; // A mask determining what the character can climb
@@ -178,12 +178,12 @@ namespace UnitySampleAssets._2D
 			else 
 			{	
 	            // horizontal control when the player is grounded or flying
-	            if (grounded || anim.GetBool("Fly"))
+	            //if (grounded || anim.GetBool("Fly"))
 	            {
 	            	move_h *= anim.GetBool("Grab") ? grabSpeed : (anim.GetBool("Mount") ? mountSpeed : 1.0f );
 	                anim.SetFloat("Speed", Mathf.Abs(move_h));
 	                anim.SetFloat("vSpeed", Mathf.Abs(rigidbody2D.velocity.y));
-	                rigidbody2D.velocity = new Vector2(move_h*maxSpeed, rigidbody2D.velocity.y);
+	                rigidbody2D.velocity = new Vector2(move_h == 0.0f ? rigidbody2D.velocity.x : move_h * maxSpeed, rigidbody2D.velocity.y);
 				}					
 
 	            // vertical control - jumping and flying
