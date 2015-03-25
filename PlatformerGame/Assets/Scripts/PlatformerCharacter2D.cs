@@ -200,7 +200,7 @@ namespace UnitySampleAssets._2D
 					else if ( canFly && !anim.GetBool("Grab"))
 					{
 						anim.SetBool("Fly", true);
-						if (flaps > 0 && rigidbody2D.velocity.y < maxClimbSpeed && rigidbody2D.position.y < maxHeight )
+						if (flaps > 0 && rigidbody2D.velocity.y <= 0 && rigidbody2D.position.y < maxHeight )
 							rigidbody2D.AddForce(new Vector2(0f, jumpForce*1.25f));
 							flaps -= 1;
 					}
