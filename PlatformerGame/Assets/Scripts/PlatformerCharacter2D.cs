@@ -10,7 +10,7 @@ namespace UnitySampleAssets._2D
 		[SerializeField] private float maxHeight = 12f; // The fastest the player can travel in the x axis.
         [SerializeField] private float jumpForce = 300f; // Amount of force added when the player jumps.	
 		[SerializeField] private float mountJumpForce = 6000f; // Amount of force added when the raindeer jumps.	
-		[SerializeField] private int maxFlaps = 30; // The fastest the player can travel in the x axis.
+		[SerializeField] private int maxFlaps = 3; // The fastest the player can travel in the x axis.
 
 
         [Range(0, 1)] [SerializeField] private float crouchSpeed = .36f;
@@ -162,7 +162,6 @@ namespace UnitySampleAssets._2D
 					anim.SetBool("Dig", false);
 				}				
 			}
-
 
 			// handle movement while digging
 			if (anim.GetBool("Dig")) 
