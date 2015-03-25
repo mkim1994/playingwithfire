@@ -16,7 +16,7 @@ namespace UnitySampleAssets._2D
 		
 		void Update () {
 			if (Input.GetKey(KeyCode.R)){transform.position = startPos;}
-
+			if (mounted){transform.position = child.position + new Vector3(0,0.7f,0);}
 			if (Input.GetKeyDown (KeyCode.LeftShift)) {
 				if(!mounted){ //mount
 					if (Vector3.Distance (child.position, transform.renderer.bounds.center) < 1f) {
