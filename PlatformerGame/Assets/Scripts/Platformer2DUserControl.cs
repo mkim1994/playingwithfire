@@ -21,7 +21,7 @@ namespace UnitySampleAssets._2D
         {
             // Read the jump input in Update so button presses aren't missed.
             if (!jump)
-           	    jump = Input.GetKey(KeyCode.UpArrow);
+           	    jump = Input.GetKeyDown(KeyCode.UpArrow);
 
         }
 
