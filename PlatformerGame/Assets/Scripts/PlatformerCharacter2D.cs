@@ -97,9 +97,12 @@ namespace UnitySampleAssets._2D
 
 		public void Respawn(){
 			transform.position = spawnPoint;
-			GameObject fade = GameObject.Find("Fader");
+			/*GameObject fade = GameObject.Find("Fader");
 			Fader fadeScript = fade.GetComponent<Fader>();
-			fadeScript.Invoke("FadeToClear",0f);
+			fadeScript.guiTexture.enabled = true;	
+			fadeScript.guiTexture.color = Color.black;
+			fadeScript.Invoke("StartScene",0.0f);*/
+
 		}
 
 		public void Mount(Vector3 rPos){
