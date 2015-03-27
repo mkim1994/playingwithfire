@@ -16,7 +16,10 @@ namespace UnitySampleAssets._2D
 				}
         }
 		private void Respawn(){
-			character.Respawn();
+			if (Application.loadedLevelName == "05")
+				DieInAFire ();
+			else
+				character.Respawn();
 		}
 
 		public void DieInAFire()
