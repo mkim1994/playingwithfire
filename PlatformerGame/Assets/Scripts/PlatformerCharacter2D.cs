@@ -96,14 +96,10 @@ namespace UnitySampleAssets._2D
         }
 
 		public void Respawn(){
-			Vector3 spawnSpot = spawnPoint;
-			Invoke ("Spawn", 0.1f);
-			Application.LoadLevel (Application.loadedLevel);
-			spawnPoint = spawnSpot;
-		}
-
-		public void Spawn(){
 			transform.position = spawnPoint;
+			GameObject fade = GameObject.Find("Fader");
+			Fader fadeScript = fade.GetComponent<Fader>();
+			fadeScript.Invoke("FadeToClear",0f);
 		}
 
 		public void Mount(Vector3 rPos){
