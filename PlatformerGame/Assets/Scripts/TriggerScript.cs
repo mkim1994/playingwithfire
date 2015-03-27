@@ -23,6 +23,11 @@ public class TriggerScript : MonoBehaviour {
 	public void rescale(){
 		transform.localScale = new Vector3 (3.2f, 4.8f, 1.0f);
 	}
+
+	public void enable(){
+		SpriteRenderer renderer = GetComponent<SpriteRenderer> ();
+		renderer.enabled = true;
+	}
 	//add other functions here as neccessary 
 	//put name of function as function variable in trigger stone to call it
 	
