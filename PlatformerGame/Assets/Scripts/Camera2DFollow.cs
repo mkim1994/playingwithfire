@@ -25,6 +25,7 @@ namespace UnitySampleAssets._2D
             offsetZ = (transform.position - target.position).z;
             transform.parent = null;
 			minx = transform.position.x;
+			transform.position = target.position;
         }
 
         // Update is called once per frame
