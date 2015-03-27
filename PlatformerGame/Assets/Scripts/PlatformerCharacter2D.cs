@@ -26,7 +26,7 @@ namespace UnitySampleAssets._2D
 		[SerializeField] private LayerMask whatIsDigable; // A mask determining what the character can dig
 
         private Transform groundCheck; // A position marking where to check if the player is grounded.
-        private float groundedRadius = .4f; // Radius of the overlap circle to determine if grounded
+        private float groundedRadius = .01f; // Radius of the overlap circle to determine if grounded
         private bool grounded = false; // Whether or not the player is grounded.
         private Transform ceilingCheck; // A position marking where to check for ceilings
         private float ceilingRadius = .01f; // Radius of the overlap circle to determine if the player can stand up
@@ -137,7 +137,7 @@ namespace UnitySampleAssets._2D
 		}
 
 		public void Climb (){
-			if (Physics2D.OverlapCircle(groundCheck.position, groundedRadius*1.5f, whatIsClimbable)) 
+			if (Physics2D.OverlapCircle(groundCheck.position, .4f, whatIsClimbable)) 
 			{
 				anim.SetBool("Climb", true);
 				if (rigidbody2D.velocity.y < maxClimbSpeed && !anim.GetBool("Mount")){
