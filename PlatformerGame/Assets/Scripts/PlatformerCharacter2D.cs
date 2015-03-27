@@ -157,7 +157,7 @@ namespace UnitySampleAssets._2D
 			{
 				anim.SetBool("Bash",true);
 				breakingRock = rock;
-				Invoke("BreakRock",1.0f); //change 1.0f to however long the animation takes
+				Invoke("BreakRock",0.0f); //change 1.0f to however long the animation takes
 			}
 		}
 
