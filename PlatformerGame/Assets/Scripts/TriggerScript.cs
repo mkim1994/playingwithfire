@@ -15,6 +15,14 @@ public class TriggerScript : MonoBehaviour {
 		Destroy (gameObject);
 	}
 
+
+	public void drop(){
+		transform.position = new Vector3 (32.9f, 3.2f, 0.0f);
+	}
+
+	public void rescale(){
+		transform.localScale = new Vector3 (3.2f, 4.8f, 1.0f);
+	}
 	//add other functions here as neccessary 
 	//put name of function as function variable in trigger stone to call it
 	
