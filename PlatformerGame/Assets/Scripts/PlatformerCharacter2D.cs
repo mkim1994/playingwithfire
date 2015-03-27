@@ -34,6 +34,12 @@ namespace UnitySampleAssets._2D
 		private float maxClimbSpeed = 2f;
 		public Vector3 spawnPoint = new Vector3(0,0,1);
 		public bool canFly = false; 
+		private Vector3 rrScale = new Vector3 (1, 1, 0);
+		private Vector3 rlScale = new Vector3 (-1, 1, 0);
+		private Vector3 prScale = new Vector3 (0.8f, 0.8f, 0.0f);
+		private Vector3 plScale = new Vector3 (-0.8f, 0.8f, 0.0f);
+
+		private BoxCollider2D box;
 
 		private bool rabbitAspect;
 		private int flaps;
@@ -81,6 +87,7 @@ namespace UnitySampleAssets._2D
 			else{
 				rabbitAspect = true;
 			}
+			box = GetComponent<BoxCollider2D> ();
         }
 
         private void FixedUpdate()
@@ -110,11 +117,23 @@ namespace UnitySampleAssets._2D
 			transform.position = rPos;//center at raindeer pos
 			anim.SetBool("Mount", true);
 			anim.SetBool("Reindeer",true);
+			if (facingRight)
+				transform.localScale = rrScale;
+			else
+				transform.localScale = rlScale;
+			box.center = new Vector2 (1f, 1f);
+			box.size = new Vector2 (00f, 000f);
 		}
 
 		public void Dismount(){
 			anim.SetBool("Mount", false);
 			anim.SetBool("Reindeer",false);
+			if (facingRight)
+				transform.localScale = prScale;
+			else
+				transform.localScale = plScale;
+			box.center = new Vector2 (0f, 0.1f);
+			box.size = new Vector2 (0.66f, 1.4f);
 		}
 
 		public void Climb (){
