@@ -5,6 +5,7 @@ public class DigTrigger : MonoBehaviour {
 	public Transform child;
 	public TriggerScript tiles;
 	public TriggerScript sprites;
+	public TriggerScript wall;
 	public string tileFunction;
 	public string spriteFunction;
 
@@ -17,6 +18,8 @@ public class DigTrigger : MonoBehaviour {
 				tiles.Invoke (tileFunction, 0f);
 			if(sprites != null)
 				sprites.Invoke (spriteFunction, 0f);
+			if(wall != null)
+				wall.Invoke ("delete", 0f);
 		}
 	}
 }
