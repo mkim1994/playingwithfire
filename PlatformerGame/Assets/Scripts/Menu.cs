@@ -16,7 +16,7 @@ public class Menu : MonoBehaviour {
 	}
 
 	public void nextLevel(){
-		nextlvl();
+		Invoke ("nextlvl", 0.6f);
 
 	}
 
