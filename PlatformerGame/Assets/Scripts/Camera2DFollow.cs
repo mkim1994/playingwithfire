@@ -16,6 +16,7 @@ namespace UnitySampleAssets._2D
         private Vector3 lastTargetPosition;
         private Vector3 currentVelocity;
         private Vector3 lookAheadPos;
+		private float minx;
 
         // Use this for initialization
         private void Start()
@@ -23,6 +24,7 @@ namespace UnitySampleAssets._2D
             lastTargetPosition = target.position;
             offsetZ = (transform.position - target.position).z;
             transform.parent = null;
+			minx = transform.position.x;
         }
 
         // Update is called once per frame
@@ -46,6 +48,7 @@ namespace UnitySampleAssets._2D
             Vector3 aheadTargetPos = target.position + lookAheadPos + Vector3.forward*offsetZ;
             Vector3 newPos = Vector3.SmoothDamp(transform.position, aheadTargetPos, ref currentVelocity, damping);
 
+			if (newPos.x < minx){ newPos = new Vector3(minx,newPos.y,newPos.z);}
             transform.position = newPos;
 
             lastTargetPosition = target.position;
