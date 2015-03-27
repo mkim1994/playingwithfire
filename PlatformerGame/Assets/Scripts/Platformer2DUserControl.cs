@@ -38,7 +38,7 @@ namespace UnitySampleAssets._2D
             // Pass all parameters to the character control script.
             character.Move(h, v, dig, jump);
             jump = false;
-			if (Input.GetKey(KeyCode.R)){character.transform.position = startPos;}
+			if (Input.GetKey(KeyCode.R)){character.Respawn();}
         }
 		private	void OnCollisionStay2D(Collision2D coll) {
 			if (coll.gameObject.tag == "Breakable"){
