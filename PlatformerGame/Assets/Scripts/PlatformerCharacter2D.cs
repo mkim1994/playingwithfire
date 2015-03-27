@@ -121,15 +121,6 @@ namespace UnitySampleAssets._2D
 				transform.localScale = rrScale;
 			else
 				transform.localScale = rlScale;
-			box.center = new Vector2 (0f, .35f);
-			box.size = new Vector2 (2.86f, 2.86f);
-			//Transform ground = transform.GetChild (0);
-			//Transform ceil = transform.GetChild (1);
-			//ground.position = new Vector2 (0f, -1.055f);
-			//ceil.position = new Vector2 (0.85f, 1.9f);
-			ceilingCheck.position = new Vector2 (.85f, 1.9f);
-			print (transform.GetChild (1).position);
-			print (box.size);
 			PolygonCollider2D b = GetComponentInChildren<PolygonCollider2D> ();
 			b.enabled = true;
 
@@ -142,15 +133,7 @@ namespace UnitySampleAssets._2D
 				transform.localScale = prScale;
 			else
 				transform.localScale = plScale;
-			box.center = new Vector2 (0f, 0.1f);
-			box.size = new Vector2 (0.66f, 1.4f);
-			//Transform ceil = transform.GetChild (1);
-			//ceil.position = new Vector2 (0f, 1f);
-			ceilingCheck.position = new Vector2 (0f, 1f);
-			print (transform.GetChild (1).position);
-			print (box.size);
 			PolygonCollider2D b = GetComponentInChildren<PolygonCollider2D> ();
-			print (b.name);
 			b.enabled = false;
 		}
 
