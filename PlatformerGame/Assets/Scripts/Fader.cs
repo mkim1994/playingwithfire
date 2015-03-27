@@ -63,7 +63,6 @@ public class Fader : MonoBehaviour
 		// Make sure the texture is enabled.
 		guiTexture.enabled = true;
 
-
 		// Start fading towards black.
 		FadeToBlack();
 		// ... reload next level.
