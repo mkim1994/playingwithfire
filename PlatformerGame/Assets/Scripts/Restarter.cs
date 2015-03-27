@@ -22,7 +22,7 @@ namespace UnitySampleAssets._2D
 		public void DieInAFire()
 		{
 			Debug.Log("YOU DIED IN A FIRE");
-			character.Respawn();
+			Application.LoadLevel (Application.loadedLevel);
 		}
     }
 }
