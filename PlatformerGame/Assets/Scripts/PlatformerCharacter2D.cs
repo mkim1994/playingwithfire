@@ -69,6 +69,7 @@ namespace UnitySampleAssets._2D
 
         private void Awake()
         {
+			spawnPoint = transform.position;
             // Setting up references.
             groundCheck = transform.Find("GroundCheck");
             ceilingCheck = transform.Find("CeilingCheck");
