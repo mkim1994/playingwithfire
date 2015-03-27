@@ -10,7 +10,7 @@ public class FloatingLog : MonoBehaviour {
 	{
 		if (other.tag == "Water") 
 		{	
-			if (transform.position.y - other.transform.position.y < 2.1f){
+			if (transform.position.y - other.transform.position.y < 2.4f){
 			rigidbody2D.AddForce(Vector3.up * bouyancy);
 			rigidbody2D.velocity = new Vector2(floatSpeed*rigidbody2D.velocity.x/Mathf.Abs(rigidbody2D.velocity.x), rigidbody2D.velocity.y*0.99f);
 				if (Mathf.Abs(rigidbody2D.velocity.x) <= 0.1f) {

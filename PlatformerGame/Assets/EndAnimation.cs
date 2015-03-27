@@ -4,6 +4,7 @@ using System.Collections;
 public class EndAnimation : MonoBehaviour {
 
 	private Animator animator;
+	public string levelToLoad;
 
 	// Use this for initialization
 	void Start () {
@@ -20,7 +21,7 @@ public class EndAnimation : MonoBehaviour {
 		AnimatorStateInfo currentAnim = animator.GetCurrentAnimatorStateInfo(0);
 		if ( currentAnim.IsName("End State") )
 		{
-			Debug.Log("Animation Over, go to next level");
+			Application.LoadLevel(levelToLoad);
 		}
 	}
 }
