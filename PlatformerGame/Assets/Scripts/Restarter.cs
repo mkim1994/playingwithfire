@@ -10,7 +10,7 @@ namespace UnitySampleAssets._2D
         {
             if (other.tag == "Respawn"){
                 //Application.LoadLevel(Application.loadedLevelName);
-				Invoke ("Respawn", 0.6f);} //delay before respawn
+				Invoke ("Respawn", 0.0f);} //delay before respawn
 			if (other.tag == "SpawnStone") {
 				character.spawnPoint = other.transform.position;
 				}
